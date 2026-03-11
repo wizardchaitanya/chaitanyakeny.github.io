@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Chaitanya Keny — Game Developer</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323:wght@400&family=Share+Tech+Mono&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --black:#080c10;--dark:#0d1117;--panel:#111820;--panel2:#161e28;
+  --yellow:#f5d300;--cyan:#00e5ff;--green:#39ff14;--pink:#ff2d78;--blue:#2e75ff;
+  --white:#e8f0fe;--gray:#4a5568;--dim:#2a3545;
+  --font-pixel:'Press Start 2P',monospace;--font-vt:'VT323',monospace;--font-mono:'Share Tech Mono',monospace;
+  --glow-y:0 0 8px #f5d300,0 0 20px #f5d30066;--glow-c:0 0 8px #00e5ff,0 0 20px #00e5ff55;
+  --glow-g:0 0 8px #39ff14,0 0 20px #39ff1444;--glow-p:0 0 8px #ff2d78,0 0 20px #ff2d7844;
+}
+html{scroll-behavior:smooth}
+body{background:var(--black);color:var(--white);font-family:var(--font-mono);cursor:crosshair;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.15) 2px,rgba(0,0,0,.15) 4px)}
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background-image:radial-gradient(circle,#1a2535 1px,transparent 1px);background-size:28px 28px;opacity:.6}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--dark)}::-webkit-scrollbar-thumb{background:var(--yellow);border-radius:0}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(8,12,16,.92);border-bottom:2px solid var(--yellow);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:56px;backdrop-filter:blur(6px)}
+.nav-logo{font-family:var(--font-pixel);font-size:.7rem;color:var(--yellow);text-shadow:var(--glow-y);letter-spacing:2px}
+.nav-links{display:flex;gap:2rem}
+.nav-links a{font-family:var(--font-pixel);font-size:.45rem;color:var(--white);text-decoration:none;letter-spacing:1px;padding:4px 0;border-bottom:2px solid transparent;transition:color .2s,border-color .2s,text-shadow .2s}
+.nav-links a:hover{color:var(--yellow);border-color:var(--yellow);text-shadow:var(--glow-y)}
+
+#hero{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:80px 2rem 4rem;overflow:hidden}
+.hero-corner{position:absolute;width:120px;height:120px;border-color:var(--yellow);border-style:solid;opacity:.5}
+.hero-corner.tl{top:80px;left:24px;border-width:3px 0 0 3px}.hero-corner.tr{top:80px;right:24px;border-width:3px 3px 0 0}
+.hero-corner.bl{bottom:24px;left:24px;border-width:0 0 3px 3px}.hero-corner.br{bottom:24px;right:24px;border-width:0 3px 3px 0}
+.hero-tag{font-family:var(--font-pixel);font-size:.5rem;color:var(--cyan);letter-spacing:4px;margin-bottom:1.5rem;text-shadow:var(--glow-c);animation:blink-slow 3s infinite}
+.hero-name{font-family:var(--font-pixel);font-size:clamp(1.4rem,4vw,2.6rem);color:var(--yellow);text-shadow:var(--glow-y);line-height:1.6;margin-bottom:1rem;animation:glitch 6s infinite}
+.hero-title{font-family:var(--font-vt);font-size:clamp(1.6rem,3vw,2.2rem);color:var(--white);letter-spacing:3px;margin-bottom:2rem;opacity:.85}
+.hero-badges{display:flex;flex-wrap:wrap;gap:.6rem;justify-content:center;margin-bottom:2.5rem}
+.badge{font-family:var(--font-pixel);font-size:.38rem;padding:.4rem .8rem;border:1px solid;letter-spacing:1px}
+.badge.y{border-color:var(--yellow);color:var(--yellow)}.badge.c{border-color:var(--cyan);color:var(--cyan)}
+.badge.g{border-color:var(--green);color:var(--green)}.badge.p{border-color:var(--pink);color:var(--pink)}
+.hero-cta{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center}
+.btn{font-family:var(--font-pixel);font-size:.45rem;padding:.7rem 1.4rem;text-decoration:none;letter-spacing:1px;cursor:pointer;border:none;transition:all .2s;display:inline-block}
+.btn-primary{background:var(--yellow);color:var(--black)}.btn-primary:hover{box-shadow:var(--glow-y);transform:translateY(-2px)}
+.btn-outline{background:transparent;color:var(--cyan);border:2px solid var(--cyan)}.btn-outline:hover{background:var(--cyan);color:var(--black);box-shadow:var(--glow-c)}
+
+section{position:relative;z-index:1;padding:5rem 2rem}
+.container{max-width:1100px;margin:0 auto}
+.section-label{font-family:var(--font-pixel);font-size:.5rem;color:var(--cyan);letter-spacing:4px;margin-bottom:.5rem;text-shadow:var(--glow-c)}
+.section-title{font-family:var(--font-pixel);font-size:clamp(.8rem,2vw,1.2rem);color:var(--yellow);margin-bottom:.5rem;text-shadow:var(--glow-y)}
+.section-rule{width:100%;height:2px;background:linear-gradient(90deg,var(--yellow),transparent);margin-bottom:3rem}
+
+/* ── ABOUT NEW LAYOUT ── */
+.about-wrap{display:grid;grid-template-columns:160px 1fr;gap:2.5rem;align-items:start;margin-bottom:3rem}
+.about-photo-col{display:flex;flex-direction:column;align-items:center;gap:.8rem}
+.about-photo{width:140px;height:140px;object-fit:cover;object-position:top center;border:2px solid var(--yellow);box-shadow:0 0 18px rgba(245,211,0,.3),4px 4px 0 var(--dim);display:block}
+.photo-placeholder{width:140px;height:140px;border:2px solid var(--yellow);background:var(--panel2);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.6rem;box-shadow:0 0 18px rgba(245,211,0,.3),4px 4px 0 var(--dim)}
+.photo-placeholder .ph-icon{font-size:2.8rem}
+.photo-placeholder .ph-txt{font-family:var(--font-pixel);font-size:.28rem;color:var(--gray);text-align:center;line-height:1.6;padding:0 .4rem}
+.about-status-badge{font-family:var(--font-pixel);font-size:.3rem;color:var(--green);border:1px solid var(--green);padding:.3rem .5rem;letter-spacing:1px;animation:blink-slow 2.5s infinite;text-align:center;width:140px}
+.about-text-col{}
+.about-heading{font-family:var(--font-pixel);font-size:.7rem;color:var(--yellow);text-shadow:var(--glow-y);margin-bottom:.3rem;letter-spacing:1px}
+.about-sub{font-family:var(--font-vt);font-size:1.3rem;color:var(--cyan);letter-spacing:2px;margin-bottom:1.2rem}
+.about-bio p{font-family:var(--font-mono);font-size:.88rem;color:rgba(232,240,254,.8);line-height:1.9;margin-bottom:.9rem}
+.about-bio em{color:var(--yellow);font-style:normal}
+.about-meta{display:flex;flex-wrap:wrap;gap:.8rem;margin-top:1rem}
+.about-meta-item{font-family:var(--font-mono);font-size:.78rem;color:var(--gray);display:flex;align-items:center;gap:.4rem}
+.about-meta-item::before{content:'▸';color:var(--yellow)}
+
+.skills-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.5rem}
+.skill-card{background:var(--panel);border:1px solid var(--dim);padding:1.5rem;position:relative;overflow:hidden;transition:border-color .3s,transform .3s}
+.skill-card::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:var(--yellow)}
+.skill-card:hover{border-color:var(--yellow);transform:translateY(-4px);box-shadow:0 8px 24px rgba(245,211,0,.1)}
+.skill-card-title{font-family:var(--font-pixel);font-size:.5rem;color:var(--yellow);margin-bottom:1rem;letter-spacing:1px}
+.skill-tag{display:inline-block;font-family:var(--font-mono);font-size:.8rem;color:var(--cyan);background:rgba(0,229,255,.08);border:1px solid rgba(0,229,255,.2);padding:.2rem .5rem;margin:.2rem .2rem .2rem 0}
+
+.projects-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(310px,1fr));gap:1.5rem}
+.project-card{background:var(--panel);border:1px solid var(--dim);padding:1.5rem;position:relative;overflow:hidden;transition:all .3s}
+.project-card::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(245,211,0,.03),transparent);pointer-events:none}
+.project-card:hover{border-color:var(--cyan);box-shadow:0 0 30px rgba(0,229,255,.1);transform:translateY(-4px)}
+.project-card.featured{border-color:var(--yellow)}.project-card.featured:hover{box-shadow:0 0 30px rgba(245,211,0,.15)}
+.card-type{font-family:var(--font-pixel);font-size:.38rem;letter-spacing:2px;margin-bottom:.8rem;display:flex;align-items:center;gap:.5rem}
+.card-type .dot{width:6px;height:6px;border-radius:50%;display:inline-block}
+.type-solo .dot{background:var(--green);box-shadow:var(--glow-g)}.type-team .dot{background:var(--cyan);box-shadow:var(--glow-c)}
+.type-wip .dot{background:var(--pink);box-shadow:var(--glow-p);animation:pulse 1.5s infinite}.type-assign .dot{background:var(--yellow);box-shadow:var(--glow-y)}
+.card-title{font-family:var(--font-pixel);font-size:.65rem;color:var(--yellow);margin-bottom:.4rem;line-height:1.6}
+.card-jam{font-family:var(--font-vt);font-size:1rem;color:var(--gray);margin-bottom:.8rem;letter-spacing:1px}
+.card-desc{font-family:var(--font-mono);font-size:.85rem;color:rgba(232,240,254,.75);line-height:1.6;margin-bottom:1rem}
+.card-tags{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1rem}
+.ctag{font-family:var(--font-pixel);font-size:.32rem;padding:.25rem .5rem;border:1px solid;letter-spacing:1px}
+.ctag-g{border-color:var(--green);color:var(--green)}.ctag-c{border-color:var(--cyan);color:var(--cyan)}
+.ctag-y{border-color:var(--yellow);color:var(--yellow)}.ctag-p{border-color:var(--pink);color:var(--pink)}.ctag-b{border-color:var(--blue);color:var(--blue)}
+.card-link{font-family:var(--font-pixel);font-size:.38rem;color:var(--cyan);text-decoration:none;letter-spacing:1px;border-bottom:1px solid var(--cyan);padding-bottom:2px;transition:color .2s,text-shadow .2s}
+.card-link:hover{color:var(--yellow);border-color:var(--yellow);text-shadow:var(--glow-y)}
+
+.project-full{background:var(--panel);border:1px solid var(--dim);padding:2rem;margin-bottom:1.5rem;display:grid;grid-template-columns:1fr 2fr;gap:2rem;transition:all .3s}
+.project-full:hover{border-color:var(--yellow);box-shadow:0 0 30px rgba(245,211,0,.1)}
+.project-full-title{font-family:var(--font-pixel);font-size:.8rem;color:var(--yellow);margin-bottom:.5rem;line-height:1.7}
+.project-full-sub{font-family:var(--font-vt);font-size:1.1rem;color:var(--cyan);margin-bottom:1rem;letter-spacing:1px}
+.bullet-list{list-style:none;padding:0}
+.bullet-list li{font-family:var(--font-mono);font-size:.82rem;color:rgba(232,240,254,.8);line-height:1.6;padding:.3rem 0 .3rem 1.2rem;position:relative;border-bottom:1px solid rgba(255,255,255,.04)}
+.bullet-list li::before{content:'▸';position:absolute;left:0;color:var(--yellow)}
+
+.assign-card{background:var(--panel);border:1px solid var(--yellow);padding:2rem;margin-bottom:1.5rem;position:relative;overflow:hidden}
+.assign-card::before{content:'INDUSTRY ASSIGNMENT';position:absolute;top:12px;right:16px;font-family:var(--font-pixel);font-size:.32rem;color:var(--yellow);letter-spacing:2px;opacity:.4}
+.assign-badge{display:inline-block;font-family:var(--font-pixel);font-size:.35rem;background:var(--yellow);color:var(--black);padding:.3rem .7rem;margin-bottom:1rem;letter-spacing:1px}
+.assign-title{font-family:var(--font-pixel);font-size:.75rem;color:var(--yellow);margin-bottom:.4rem;line-height:1.7}
+.assign-sub{font-family:var(--font-vt);font-size:1.1rem;color:var(--cyan);margin-bottom:1rem;letter-spacing:1px}
+.assign-desc{font-family:var(--font-mono);font-size:.85rem;color:rgba(232,240,254,.8);line-height:1.7;margin-bottom:1.2rem}
+.systems-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:.8rem;margin-top:1rem}
+.sys-item{background:rgba(245,211,0,.05);border:1px solid rgba(245,211,0,.2);padding:.6rem .8rem;font-family:var(--font-mono);font-size:.78rem;color:var(--white);display:flex;align-items:center;gap:.5rem}
+.sys-item::before{content:'✓';color:var(--green);font-weight:bold}
+
+.jam-table{width:100%;border-collapse:collapse;font-family:var(--font-mono)}
+.jam-table th{font-family:var(--font-pixel);font-size:.38rem;color:var(--yellow);padding:.8rem 1rem;text-align:left;border-bottom:2px solid var(--yellow);letter-spacing:1px}
+.jam-table td{padding:.7rem 1rem;font-size:.82rem;border-bottom:1px solid var(--dim);color:rgba(232,240,254,.8);transition:background .2s}
+.jam-table tr:hover td{background:rgba(245,211,0,.04)}.jam-table td:first-child{color:var(--cyan)}
+.jam-num{font-family:var(--font-pixel);font-size:.5rem;color:var(--yellow);min-width:2rem;display:inline-block}
+
+#contact{background:var(--panel)}
+.contact-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.5rem}
+.contact-item{background:var(--panel2);border:1px solid var(--dim);padding:1.5rem;text-align:center;transition:all .3s}
+.contact-item:hover{border-color:var(--yellow);transform:translateY(-3px)}
+.contact-icon{font-size:1.5rem;margin-bottom:.8rem}
+.contact-label{font-family:var(--font-pixel);font-size:.4rem;color:var(--gray);margin-bottom:.4rem;letter-spacing:2px}
+.contact-val{font-family:var(--font-mono);font-size:.85rem;color:var(--cyan);text-decoration:none}
+.contact-val:hover{color:var(--yellow);text-shadow:var(--glow-y)}
+
+footer{position:relative;z-index:1;text-align:center;padding:2rem;border-top:2px solid var(--dim);font-family:var(--font-pixel);font-size:.38rem;color:var(--gray);letter-spacing:2px}
+footer span{color:var(--yellow)}
+.px-divider{text-align:center;padding:1.5rem 0;font-family:var(--font-pixel);font-size:.4rem;color:var(--dim);letter-spacing:3px}
+.sub-label{font-family:var(--font-pixel);font-size:.45rem;color:var(--cyan);margin-bottom:1.2rem;letter-spacing:2px}
+
+@keyframes glitch{0%,90%,100%{text-shadow:var(--glow-y)}92%{text-shadow:-3px 0 var(--pink),3px 0 var(--cyan);transform:skewX(-1deg)}94%{text-shadow:3px 0 var(--pink),-3px 0 var(--cyan);transform:skewX(1deg)}96%{text-shadow:var(--glow-y);transform:skewX(0)}}
+@keyframes blink-slow{0%,49%{opacity:1}50%,100%{opacity:.3}}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+.fade-up{animation:fadeUp .6s ease both}
+.delay-1{animation-delay:.1s}.delay-2{animation-delay:.2s}.delay-3{animation-delay:.3s}
+.cursor-dot{position:fixed;width:4px;height:4px;background:var(--yellow);border-radius:50%;pointer-events:none;z-index:9998;transition:opacity .5s}
+
+@media(max-width:700px){
+  .project-full,.about-wrap{grid-template-columns:1fr}
+  .nav-links{gap:1rem}
+  .about-photo-col{flex-direction:row;align-items:center}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">CK.DEV</div>
+  <div class="nav-links">
+    <a href="#about">ABOUT</a>
+    <a href="#solo">SOLO WORK</a>
+    <a href="#team">TEAM</a>
+    <a href="#personal">PERSONAL</a>
+    <a href="#contact">CONTACT</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-corner tl"></div><div class="hero-corner tr"></div>
+  <div class="hero-corner bl"></div><div class="hero-corner br"></div>
+  <div class="hero-tag fade-up">// GAME DEVELOPER</div>
+  <h1 class="hero-name fade-up delay-1">CHAITANYA KENY</h1>
+  <div class="hero-title fade-up delay-2">Unity · C# · 2D & 3D</div>
+  <div class="hero-badges fade-up delay-3">
+    <span class="badge y">UNITY</span><span class="badge c">C#</span>
+    <span class="badge g">GAME JAM VETERAN</span><span class="badge p">ENEMY AI</span>
+    <span class="badge y">PUZZLE DESIGN</span><span class="badge c">COMBAT SYSTEMS</span>
+    <span class="badge g">BLENDER</span>
+  </div>
+  <div class="hero-cta fade-up delay-3">
+    <a href="https://chaitanyawizard.itch.io" target="_blank" class="btn btn-primary">▶ PLAY MY GAMES</a>
+    <a href="#about" class="btn btn-outline">VIEW PORTFOLIO</a>
+  </div>
+</section>
+
+<!-- ══ ABOUT ══════════════════════════════════════════════════ -->
+<section id="about">
+<div class="container">
+  <div class="section-label">// 001</div>
+  <h2 class="section-title">ABOUT ME</h2>
+  <div class="section-rule"></div>
+
+  <div class="about-wrap">
+    <!-- Photo -->
+    <div class="about-photo-col">
+      <!--
+        HOW TO ADD YOUR PHOTO:
+        1. On your laptop, convert IMG_0229.HEIC → profile.jpg
+        2. Put profile.jpg in the same folder as this index.html
+        3. Replace the div.photo-placeholder below with:
+           <img src="profile.jpg" alt="Chaitanya Keny" class="about-photo"/>
+      -->
+      <img src="profile.jpg" alt="Chaitanya Keny" class="about-photo"/>
+      <div class="about-status-badge">▸ OPEN TO WORK</div>
+    </div>
+
+    <!-- Bio -->
+    <div class="about-text-col">
+      <div class="about-heading">CHAITANYA KENY</div>
+      <div class="about-sub">Game Developer · Mumbai, India</div>
+      <div class="about-bio">
+        <p>I'm a game developer driven by one belief — games are the most powerful medium for storytelling and experience. From the moment I wrote my first line of Unity C#, I knew this was the craft I wanted to dedicate myself to.</p>
+        <p>I'm passionate about designing systems that feel satisfying — whether that's a combat mechanic that clicks into place, an enemy AI that surprises you, or a puzzle built around one unexpected idea. I love the challenge of taking a single constraint and turning it into something <em>memorable</em>.</p>
+        <p>Building in game jams has taught me how to prioritise, prototype fast, and ship under pressure. I'm always learning, always building, and always chasing that feeling of a mechanic that just <em>works</em>.</p>
+      </div>
+      <div class="about-meta">
+        <div class="about-meta-item">Mumbai, India</div>
+        <div class="about-meta-item">Unity 2D & 3D · C#</div>
+        <div class="about-meta-item">B.E. Mechanical Engineering</div>
+        <div class="about-meta-item">GGJ 2026 Certified</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="skills-grid">
+    <div class="skill-card">
+      <div class="skill-card-title">⚙ ENGINE & LANGUAGE</div>
+      <span class="skill-tag">Unity 2D</span><span class="skill-tag">Unity 3D</span>
+      <span class="skill-tag">C#</span><span class="skill-tag">Blender</span>
+    </div>
+    <div class="skill-card">
+      <div class="skill-card-title">🎮 GAMEPLAY SYSTEMS</div>
+      <span class="skill-tag">Enemy AI FSM</span><span class="skill-tag">Combat Systems</span>
+      <span class="skill-tag">Physics</span><span class="skill-tag">Puzzle Design</span><span class="skill-tag">Air Combat</span>
+    </div>
+    <div class="skill-card">
+      <div class="skill-card-title">🏗 ARCHITECTURE</div>
+      <span class="skill-tag">OOP</span><span class="skill-tag">ScriptableObjects</span>
+      <span class="skill-tag">Singleton</span><span class="skill-tag">State Machines</span><span class="skill-tag">Board Systems</span>
+    </div>
+    <div class="skill-card">
+      <div class="skill-card-title">🛠 TOOLS & PIPELINE</div>
+      <span class="skill-tag">Git / GitHub</span><span class="skill-tag">Visual Studio</span>
+      <span class="skill-tag">itch.io</span><span class="skill-tag">Android Build</span><span class="skill-tag">WebGL</span>
+    </div>
+  </div>
+</div>
+</section>
+
+<div class="px-divider">· · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · ·</div>
+
+<!-- ══ SOLO WORK: JAMS + ASSIGNMENTS ════════════════════════ -->
+<section id="solo">
+<div class="container">
+  <div class="section-label">// 002</div>
+  <h2 class="section-title">SOLO WORK</h2>
+  <div class="section-rule"></div>
+
+  <div class="sub-label">// GAME JAM PROJECTS</div>
+  <div class="projects-grid">
+    <div class="project-card featured">
+      <div class="card-type type-solo"><span class="dot"></span> SOLO · BYOG 2025 · 3 DAYS</div>
+      <div class="card-title">ECHO</div>
+      <div class="card-jam">Theme: "RE: Think, Mix, Make"</div>
+      <div class="card-desc">2D puzzle-platformer where you record your movement — a ghostly echo then replays every action. Solve puzzles by coordinating with your own past self. Built advanced 2D platformer movement from scratch.</div>
+      <div class="card-tags">
+        <span class="ctag ctag-g">Puzzle-Platformer</span><span class="ctag ctag-c">Time-Echo Mechanic</span><span class="ctag ctag-y">Advanced Movement</span>
+      </div>
+      <a href="https://chaitanyawizard.itch.io/echo" target="_blank" class="card-link">▶ PLAY ON ITCH.IO</a>
+    </div>
+    <div class="project-card featured">
+      <div class="card-type type-solo"><span class="dot"></span> SOLO · MINI JAM #51 · 3 DAYS</div>
+      <div class="card-title">ECHO BELOW</div>
+      <div class="card-jam">Theme: "Underwater" · Object: Speaker</div>
+      <div class="card-desc">Trapped in a pitch-black underwater dungeon. Fire echo waves from a speaker to reveal the surrounding terrain — but use them carefully, they are not unlimited.</div>
+      <div class="card-tags">
+        <span class="ctag ctag-c">Echolocation</span><span class="ctag ctag-g">Resource Management</span><span class="ctag ctag-p">Puzzle-Platformer</span>
+      </div>
+      <a href="https://chaitanyawizard.itch.io/echo-below" target="_blank" class="card-link">▶ PLAY ON ITCH.IO</a>
+    </div>
+    <div class="project-card featured">
+      <div class="card-type type-solo"><span class="dot"></span> SOLO · MINI JAM #52 · 2 DAYS</div>
+      <div class="card-title">FROST BUILD</div>
+      <div class="card-jam">Theme: "Freeze" · Object: Whistle</div>
+      <div class="card-desc">Fire sonic waves from a whistle to freeze falling objects mid-air — use frozen objects as platforms. Full ScriptableObject architecture, pixel art aesthetic, procedural audio, shipped in 48 hours.</div>
+      <div class="card-tags">
+        <span class="ctag ctag-c">Physics Mechanic</span><span class="ctag ctag-y">ScriptableObjects</span><span class="ctag ctag-g">Puzzle-Platformer</span>
+      </div>
+      <a href="https://chaitanyawizard.itch.io/frost-build" target="_blank" class="card-link">▶ PLAY ON ITCH.IO</a>
+    </div>
+  </div>
+
+  <div style="margin-top:2.5rem;margin-bottom:3rem">
+    <div style="font-family:var(--font-pixel);font-size:.38rem;color:var(--cyan);margin-bottom:1rem;letter-spacing:2px">// ADDITIONAL RELEASES</div>
+    <table class="jam-table">
+      <thead><tr><th>#</th><th>GAME</th><th>JAM / THEME</th><th>GENRE</th><th>DEADLINE</th><th>LINK</th></tr></thead>
+      <tbody>
+        <tr><td><span class="jam-num">01</span></td><td>DeadLine</td><td>Patch Notes V1.1 — "Out of Time"</td><td>Platformer / Time Pressure</td><td>10 days</td><td><a href="https://chaitanyawizard.itch.io/deadline" target="_blank" class="card-link">PLAY ↗</a></td></tr>
+        <tr><td><span class="jam-num">02</span></td><td>Space Biscuit Delivery</td><td>Brackeys 2025.2 — "Risk it for the Biscuit"</td><td>Risk/Reward Arcade Survival</td><td>7 days</td><td><a href="https://chaitanyawizard.itch.io/space-biscuit-delivery" target="_blank" class="card-link">PLAY ↗</a></td></tr>
+        <tr><td><span class="jam-num">03</span></td><td>Glitch Runner</td><td>Patch Notes V1.0 — "The Error Is the Feature"</td><td>Chaotic 2D Platformer</td><td>3 days</td><td><a href="https://chaitanyawizard.itch.io/glitch-runner" target="_blank" class="card-link">PLAY ↗</a></td></tr>
+      </tbody>
+    </table>
+    <div style="margin-top:1rem;font-family:var(--font-mono);font-size:.82rem;color:var(--gray)">
+      + Mobile game jam title · Full portfolio → <a href="https://chaitanyawizard.itch.io" target="_blank" class="card-link">chaitanyawizard.itch.io</a>
+    </div>
+  </div>
+
+  <!-- INDUSTRY ASSIGNMENTS -->
+  <div class="sub-label">// INDUSTRY-LEVEL ASSIGNMENTS</div>
+  <div style="font-family:var(--font-mono);font-size:.85rem;color:rgba(232,240,254,.5);margin-bottom:2rem;line-height:1.7;border-left:3px solid var(--yellow);padding-left:1rem">
+    Completed as technical assignments for game developer positions. Executed to industry standard — demonstrating production-level architecture, modular design, and cross-platform capability.
+  </div>
+
+  <div class="assign-card">
+    <div class="assign-badge">ASSIGNMENT 01</div>
+    <div class="assign-title">CHESS CORE MECHANICS SYSTEM</div>
+    <div class="assign-sub">Unity · C# · Board Game Systems Architecture</div>
+    <div class="assign-desc">Complete chess core gameplay system in Unity — centralized BoardManager tracks tile occupancy, validates movements, and manages all piece interactions across a scalable, modular OOP architecture.</div>
+    <div class="card-tags" style="margin-bottom:1rem">
+      <span class="ctag ctag-y">Unity</span><span class="ctag ctag-c">C#</span><span class="ctag ctag-g">OOP</span><span class="ctag ctag-p">Board Systems</span><span class="ctag ctag-b">Inheritance</span>
+    </div>
+    <div style="font-family:var(--font-pixel);font-size:.38rem;color:var(--cyan);margin-bottom:.8rem;letter-spacing:2px">KEY SYSTEMS:</div>
+    <div class="systems-grid">
+      <div class="sys-item">BoardManager — board state & tile occupancy</div>
+      <div class="sys-item">Base ChessPiece class with shared properties</div>
+      <div class="sys-item">All 6 pieces: Rook, Bishop, Knight, Queen, King, Pawn</div>
+      <div class="sys-item">Legal move generation per chess rules</div>
+      <div class="sys-item">Movement blocking — friendly piece detection</div>
+      <div class="sys-item">Enemy piece capture detection</div>
+      <div class="sys-item">Tile highlighting for legal moves & captures</div>
+      <div class="sys-item">Modular architecture for easy rule expansion</div>
+    </div>
+  </div>
+
+  <div class="assign-card">
+    <div class="assign-badge">ASSIGNMENT 02</div>
+    <div class="assign-title">FOOTBALL SHOOTER — SWIPE PENALTY KICK MECHANIC</div>
+    <div class="assign-sub">Unity · C# · Physics · Mobile · Cross-Platform</div>
+    <div class="assign-desc">Physics-based penalty shooting prototype — swipe direction controls shot direction, swipe length determines power. Rigidbody physics with realistic spin, goalkeeper AI, state machine, UI feedback, audio. Tested on Windows and Android.</div>
+    <div class="card-tags" style="margin-bottom:1rem">
+      <span class="ctag ctag-y">Unity</span><span class="ctag ctag-c">C#</span><span class="ctag ctag-g">Physics</span><span class="ctag ctag-p">Mobile / Android</span><span class="ctag ctag-b">Input Systems</span>
+    </div>
+    <div style="font-family:var(--font-pixel);font-size:.38rem;color:var(--cyan);margin-bottom:.8rem;letter-spacing:2px">KEY SYSTEMS:</div>
+    <div class="systems-grid">
+      <div class="sys-item">Swipe input → shot direction & power</div>
+      <div class="sys-item">Rigidbody physics with backspin & sidespin</div>
+      <div class="sys-item">Camera-aligned world-space shot direction</div>
+      <div class="sys-item">Goalkeeper collision & save/goal detection</div>
+      <div class="sys-item">Ball state machine: Ready → InAir → Result</div>
+      <div class="sys-item">Randomised spawn point system</div>
+      <div class="sys-item">Shot power UI indicator</div>
+      <div class="sys-item">Sound: kick, goal, goalkeeper save</div>
+      <div class="sys-item">UI feedback: Goal / Saved / Missed</div>
+      <div class="sys-item">Cross-platform: Windows & Android debugged</div>
+    </div>
+  </div>
+
+</div>
+</section>
+
+<div class="px-divider">· · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · ·</div>
+
+<!-- ══ TEAM PROJECTS ══════════════════════════════════════════ -->
+<section id="team">
+<div class="container">
+  <div class="section-label">// 003</div>
+  <h2 class="section-title">TEAM PROJECTS</h2>
+  <div class="section-rule"></div>
+  <div class="projects-grid">
+    <div class="project-card featured" style="border-color:var(--cyan)">
+      <div class="card-type type-team"><span class="dot"></span> TEAM · IN DEVELOPMENT</div>
+      <div class="card-title">FURY</div>
+      <div class="card-jam">2D Action Side-Scroller · Unity / C#</div>
+      <div class="card-desc">Core gameplay developer responsible for all enemy AI and player combat systems.</div>
+      <ul class="bullet-list" style="margin-bottom:1rem">
+        <li>Modular Enemy AI FSM — patrol, chase, attack, stagger states</li>
+        <li>Full Player Combat System with ground & air combo chains</li>
+        <li>Air Combat States — mid-air sequences, directional lunges, floaty-then-slam structure</li>
+        <li>Debugged critical FSM issues: dash overrides, inverted combo windows, lunge conditions</li>
+      </ul>
+      <div class="card-tags">
+        <span class="ctag ctag-c">Enemy AI</span><span class="ctag ctag-y">Combat Systems</span><span class="ctag ctag-g">FSM</span><span class="ctag ctag-p">Air Combat</span>
+      </div>
+    </div>
+    <div class="project-card">
+      <div class="card-type type-team"><span class="dot"></span> TEAM · GGJ 2026</div>
+      <div class="card-title">FITTING IN</div>
+      <div class="card-jam">Global Game Jam 2026 · 48 Hours</div>
+      <div class="card-desc">An intergalactic explorer arrives on an alien world to study native behaviour — but must first gather fuel and maintain contact with Mission Control.</div>
+      <ul class="bullet-list" style="margin-bottom:1rem">
+        <li>First formal team game development experience</li>
+        <li>Shared codebase, live collaboration under 48-hour jam pressure</li>
+        <li>Certificate of Participation — Global Game Jam 2026</li>
+      </ul>
+      <div class="card-tags">
+        <span class="ctag ctag-g">GGJ 2026</span><span class="ctag ctag-c">Team Dev</span><span class="ctag ctag-y">Certificate</span>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<div class="px-divider">· · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · ·</div>
+
+<!-- ══ PERSONAL PROJECTS ══════════════════════════════════════ -->
+<section id="personal">
+<div class="container">
+  <div class="section-label">// 004</div>
+  <h2 class="section-title">PERSONAL PROJECTS — IN DEVELOPMENT</h2>
+  <div class="section-rule"></div>
+
+  <div class="project-full">
+    <div>
+      <div class="card-type type-wip"><span class="dot"></span> SOLO · IN DEV</div>
+      <div class="project-full-title">WHISPERS OF THE NAGA</div>
+      <div class="project-full-sub">3D Cinematic Puzzle-Adventure</div>
+      <div style="margin-bottom:1rem">
+        <span class="ctag ctag-y">Unity</span><span class="ctag ctag-c">Blender</span><span class="ctag ctag-p">3D</span><span class="ctag ctag-g">Puzzle</span><span class="ctag ctag-b">Horror</span>
+      </div>
+      <div style="font-family:var(--font-vt);font-size:1rem;color:var(--gray);letter-spacing:1px">PC · In Progress</div>
+    </div>
+    <div>
+      <div class="card-desc" style="margin-bottom:1rem">Dark mythological puzzle-adventure inside a forgotten temple-prison built to seal an ancient serpent of Indian legend. Blending exploration, cinematic puzzles, light combat, and horror atmosphere — each playable character carries a personal past tied to the Naga mythology.</div>
+      <ul class="bullet-list">
+        <li>3D environments modelled in Blender, integrated into Unity with custom lighting for cinematic horror tone</li>
+        <li>Multi-character narrative system — each character's backstory intersects with the mythology</li>
+        <li>Sole developer: gameplay programming, 3D art pipeline, level design, and narrative scripting</li>
+        <li>Unique setting drawn from Indian mythology — unexplored territory in mainstream indie games</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="project-full">
+    <div>
+      <div class="card-type type-wip"><span class="dot"></span> SOLO · IN DEV</div>
+      <div class="project-full-title">SHADOW & ALCHEMY</div>
+      <div class="project-full-sub">2D Top-Down Psychological Survival</div>
+      <div style="margin-bottom:1rem">
+        <span class="ctag ctag-y">Unity</span><span class="ctag ctag-c">2D Top-Down</span><span class="ctag ctag-p">Survival</span><span class="ctag ctag-g">Story-Driven</span>
+      </div>
+      <div style="font-family:var(--font-vt);font-size:1rem;color:var(--gray);letter-spacing:1px">PC · In Progress</div>
+    </div>
+    <div>
+      <div class="card-desc" style="margin-bottom:1rem">Psychological survival where the player navigates a world shaped by personal trauma. The protagonist's shadow grows stronger as sanity deteriorates — eventually manifesting as hostile creatures born from unresolved memory.</div>
+      <ul class="bullet-list">
+        <li>Core sanity system: darkness depletes sanity, causing shadow to grow and spawn trauma-creatures</li>
+        <li>Light as a gameplay mechanic — managing movement between moonlit areas and torches</li>
+        <li>Narrative-first: the journey is about understanding and overcoming memories, not just surviving</li>
+        <li>Building all systems solo: sanity/shadow AI, top-down movement, environmental storytelling</li>
+      </ul>
+    </div>
+  </div>
+</div>
+</section>
+
+<div class="px-divider">· · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · ·</div>
+
+<!-- ══ CONTACT ════════════════════════════════════════════════ -->
+<section id="contact">
+<div class="container">
+  <div class="section-label">// 005</div>
+  <h2 class="section-title">CONTACT</h2>
+  <div class="section-rule"></div>
+  <div style="font-family:var(--font-vt);font-size:1.3rem;color:var(--gray);margin-bottom:2rem;letter-spacing:2px">OPEN TO GAME DEVELOPER ROLES · INTERNSHIPS · FREELANCE</div>
+  <div class="contact-grid">
+    <div class="contact-item"><div class="contact-icon">✉</div><div class="contact-label">EMAIL</div><a href="mailto:chaitanyakeny@email.com" class="contact-val">chaitanyakeny@email.com</a></div>
+    <div class="contact-item"><div class="contact-icon">🎮</div><div class="contact-label">ITCH.IO</div><a href="https://chaitanyawizard.itch.io" target="_blank" class="contact-val">chaitanyawizard.itch.io</a></div>
+    <div class="contact-item"><div class="contact-icon">💻</div><div class="contact-label">GITHUB</div><a href="https://github.com/wizardchaitanya" target="_blank" class="contact-val">github.com/wizardchaitanya</a></div>
+    <div class="contact-item"><div class="contact-icon">🔗</div><div class="contact-label">LINKEDIN</div><a href="https://linkedin.com/in/chaitanya-keny" target="_blank" class="contact-val">linkedin.com/in/chaitanya-keny</a></div>
+  </div>
+</div>
+</section>
+
+<footer>
+  <div style="margin-bottom:.5rem"><span>CHAITANYA KENY</span> · GAME DEVELOPER · MUMBAI, INDIA</div>
+  <div>BUILT WITH <span>♥</span> AND LOTS OF GAME JAMS</div>
+</footer>
+
+<script>
+document.addEventListener('mousemove', e => {
+  const dot = document.createElement('div');
+  dot.className = 'cursor-dot';
+  dot.style.left = e.clientX - 2 + 'px';
+  dot.style.top  = e.clientY - 2 + 'px';
+  document.body.appendChild(dot);
+  setTimeout(() => { dot.style.opacity = '0'; }, 100);
+  setTimeout(() => dot.remove(), 600);
+});
+
+const fadeEls = document.querySelectorAll('.project-card,.project-full,.assign-card,.skill-card,.contact-item,.about-wrap');
+const fadeObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.style.opacity = '1';
+      e.target.style.transform = 'translateY(0)';
+      fadeObs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.08 });
+fadeEls.forEach(el => {
+  el.style.opacity = '0';
+  el.style.transform = 'translateY(24px)';
+  el.style.transition = 'opacity .5s ease, transform .5s ease, border-color .3s, box-shadow .3s';
+  fadeObs.observe(el);
+});
+
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.nav-links a');
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(s => { if (window.scrollY >= s.offsetTop - 100) current = s.id; });
+  navLinks.forEach(a => {
+    const active = a.getAttribute('href') === '#' + current;
+    a.style.color = active ? 'var(--yellow)' : '';
+    a.style.borderColor = active ? 'var(--yellow)' : 'transparent';
+    a.style.textShadow = active ? 'var(--glow-y)' : '';
+  });
+});
+</script>
+</body>
+</html>
