@@ -138,10 +138,83 @@ footer span{color:var(--yellow)}
 .delay-1{animation-delay:.1s}.delay-2{animation-delay:.2s}.delay-3{animation-delay:.3s}
 .cursor-dot{position:fixed;width:4px;height:4px;background:var(--yellow);border-radius:50%;pointer-events:none;z-index:9998;transition:opacity .5s}
 
-@media(max-width:700px){
-  .project-full,.about-wrap{grid-template-columns:1fr}
-  .nav-links{gap:1rem}
-  .about-photo-col{flex-direction:row;align-items:center}
+/* ══ HAMBURGER BUTTON ══ */
+.nav-hamburger{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:4px}
+.nav-hamburger span{display:block;width:22px;height:2px;background:var(--yellow);transition:all .3s}
+.nav-hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.nav-hamburger.open span:nth-child(2){opacity:0}
+.nav-hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+
+/* ══ TABLET ══ */
+@media(max-width:900px){
+  .project-full{grid-template-columns:1fr}
+  .about-wrap{grid-template-columns:140px 1fr;gap:1.5rem}
+}
+
+/* ══ MOBILE ══ */
+@media(max-width:600px){
+  nav{padding:0 1rem}
+  .nav-logo{font-size:.55rem}
+  .nav-links{
+    display:none;flex-direction:column;gap:0;
+    position:fixed;top:56px;left:0;right:0;
+    background:rgba(8,12,16,.98);border-bottom:2px solid var(--yellow);
+    padding:1rem 0;z-index:999;
+  }
+  .nav-links.open{display:flex}
+  .nav-links a{font-size:.5rem;padding:.7rem 1.5rem;border-bottom:1px solid var(--dim);width:100%}
+  .nav-links a:last-child{border-bottom:none}
+  .nav-hamburger{display:flex}
+
+  #hero{padding:70px 1.2rem 3rem}
+  .hero-corner{width:60px;height:60px}
+  .hero-corner.tl{top:64px;left:12px}.hero-corner.tr{top:64px;right:12px}
+  .hero-corner.bl{bottom:12px;left:12px}.hero-corner.br{bottom:12px;right:12px}
+  .hero-tag{font-size:.38rem;letter-spacing:2px}
+  .hero-name{font-size:clamp(1.1rem,7vw,1.8rem)}
+  .hero-title{font-size:1.4rem}
+  .badge{font-size:.3rem;padding:.3rem .6rem}
+  .btn{font-size:.38rem;padding:.6rem 1.1rem}
+
+  section{padding:3rem 1rem}
+  .section-label{font-size:.38rem}
+  .section-title{font-size:.7rem}
+
+  .about-wrap{grid-template-columns:1fr;gap:1.5rem}
+  .about-photo-col{flex-direction:row;align-items:center;gap:1rem}
+  .about-photo,.photo-placeholder{width:100px;height:100px}
+  .about-status-badge{width:auto;font-size:.28rem}
+  .about-heading{font-size:.5rem}
+  .about-sub{font-size:1.1rem}
+  .about-bio p{font-size:.82rem}
+
+  .skills-grid{grid-template-columns:1fr}
+  .skill-card-title{font-size:.4rem}
+
+  .projects-grid{grid-template-columns:1fr}
+  .project-full{grid-template-columns:1fr;padding:1.2rem}
+  .project-full-title{font-size:.6rem}
+  .card-title{font-size:.55rem}
+  .ctag{font-size:.28rem}
+  .card-type{font-size:.3rem}
+
+  .jam-table-wrap{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--dim)}
+  .jam-table{min-width:480px;font-size:.75rem}
+  .jam-table th{font-size:.3rem;padding:.6rem .6rem}
+  .jam-table td{padding:.5rem .6rem;font-size:.75rem}
+  .jam-num{font-size:.38rem}
+
+  .assign-card{padding:1.2rem}
+  .assign-title{font-size:.55rem}
+  .assign-sub{font-size:1rem}
+  .systems-grid{grid-template-columns:1fr}
+  .assign-card::before{display:none}
+
+  .contact-grid{grid-template-columns:1fr 1fr}
+  .contact-val{font-size:.75rem}
+
+  footer{font-size:.3rem;padding:1.5rem 1rem}
+  .sub-label{font-size:.35rem}
 }
 </style>
 </head>
@@ -149,13 +222,16 @@ footer span{color:var(--yellow)}
 
 <nav>
   <div class="nav-logo">CK.DEV</div>
-  <div class="nav-links">
-    <a href="#about">ABOUT</a>
-    <a href="#solo">SOLO WORK</a>
-    <a href="#team">TEAM</a>
-    <a href="#personal">PERSONAL</a>
-    <a href="#contact">CONTACT</a>
+  <div class="nav-links" id="navLinks">
+    <a href="#about" onclick="closeNav()">ABOUT</a>
+    <a href="#solo" onclick="closeNav()">SOLO WORK</a>
+    <a href="#team" onclick="closeNav()">TEAM</a>
+    <a href="#personal" onclick="closeNav()">PERSONAL</a>
+    <a href="#contact" onclick="closeNav()">CONTACT</a>
   </div>
+  <button class="nav-hamburger" id="hamburger" onclick="toggleNav()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
 
 <!-- HERO -->
@@ -286,6 +362,7 @@ footer span{color:var(--yellow)}
 
   <div style="margin-top:2.5rem;margin-bottom:3rem">
     <div style="font-family:var(--font-pixel);font-size:.38rem;color:var(--cyan);margin-bottom:1rem;letter-spacing:2px">// ADDITIONAL RELEASES</div>
+    <div class="jam-table-wrap">
     <table class="jam-table">
       <thead><tr><th>#</th><th>GAME</th><th>JAM / THEME</th><th>GENRE</th><th>DEADLINE</th><th>LINK</th></tr></thead>
       <tbody>
@@ -294,6 +371,7 @@ footer span{color:var(--yellow)}
         <tr><td><span class="jam-num">03</span></td><td>Glitch Runner</td><td>Patch Notes V1.0 — "The Error Is the Feature"</td><td>Chaotic 2D Platformer</td><td>3 days</td><td><a href="https://chaitanyawizard.itch.io/glitch-runner" target="_blank" class="card-link">PLAY ↗</a></td></tr>
       </tbody>
     </table>
+    </div>
     <div style="margin-top:1rem;font-family:var(--font-mono);font-size:.82rem;color:var(--gray)">
       + Mobile game jam title · Full portfolio → <a href="https://chaitanyawizard.itch.io" target="_blank" class="card-link">SEE MORE</a>
     </div>
@@ -497,6 +575,17 @@ fadeEls.forEach(el => {
   el.style.transition = 'opacity .5s ease, transform .5s ease, border-color .3s, box-shadow .3s';
   fadeObs.observe(el);
 });
+
+function toggleNav(){
+  const nav = document.getElementById('navLinks');
+  const btn = document.getElementById('hamburger');
+  nav.classList.toggle('open');
+  btn.classList.toggle('open');
+}
+function closeNav(){
+  document.getElementById('navLinks').classList.remove('open');
+  document.getElementById('hamburger').classList.remove('open');
+}
 
 const sections = document.querySelectorAll('section[id]');
 const navLinks = document.querySelectorAll('.nav-links a');
