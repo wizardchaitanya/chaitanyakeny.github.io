@@ -1,0 +1,384 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323:wght@400&family=Share+Tech+Mono&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --black: #080c10;
+  --dark: #0d1117;
+  --panel: #111820;
+  --panel2: #161e28;
+  --yellow: #f5d300;
+  --cyan: #00e5ff;
+  --green: #39ff14;
+  --pink: #ff2d78;
+  --blue: #2e75ff;
+  --white: #e8f0fe;
+  --gray: #4a5568;
+  --dim: #2a3545;
+  
+  --font-pixel: 'Press Start 2P', monospace;
+  --font-vt: 'VT323', monospace;
+  --font-mono: 'Share Tech Mono', monospace;
+  
+  --glow-y: 0 0 8px #f5d300, 0 0 20px #f5d30066;
+  --glow-c: 0 0 8px #00e5ff, 0 0 20px #00e5ff55;
+  --glow-g: 0 0 8px #39ff14, 0 0 20px #39ff1444;
+  --glow-p: 0 0 8px #ff2d78, 0 0 20px #ff2d7844;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+}
+
+body {
+  background: var(--black);
+  color: var(--white);
+  font-family: var(--font-mono);
+  cursor: crosshair;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+/* Scanline overlay */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.15) 2px,
+    rgba(0, 0, 0, 0.15) 4px
+  );
+}
+
+/* Dot grid background */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image: radial-gradient(circle, #1a2535 1px, transparent 1px);
+  background-size: 28px 28px;
+  opacity: 0.6;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--dark);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--yellow);
+  border-radius: 0;
+}
+
+/* Animation Keyframes */
+@keyframes glitch {
+  0%, 90%, 100% {
+    text-shadow: var(--glow-y);
+  }
+  92% {
+    text-shadow: -3px 0 var(--pink), 3px 0 var(--cyan);
+    transform: skewX(-1deg);
+  }
+  94% {
+    text-shadow: 3px 0 var(--pink), -3px 0 var(--cyan);
+    transform: skewX(1deg);
+  }
+  96% {
+    text-shadow: var(--glow-y);
+    transform: skewX(0);
+  }
+}
+
+@keyframes blink-slow {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0.3; }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.7); }
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes typewriter {
+  from { width: 0; }
+  to { width: 100%; }
+}
+
+@keyframes blink-cursor {
+  0%, 100% { border-color: transparent; }
+  50% { border-color: var(--yellow); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes rotate-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes border-glow {
+  0%, 100% { box-shadow: 0 0 5px var(--yellow), 0 0 10px var(--yellow); }
+  50% { box-shadow: 0 0 20px var(--yellow), 0 0 30px var(--yellow); }
+}
+
+@keyframes particle-float {
+  0%, 100% {
+    transform: translateY(0) translateX(0);
+    opacity: 0;
+  }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% {
+    transform: translateY(-100vh) translateX(var(--drift));
+    opacity: 0;
+  }
+}
+
+/* Utility Classes */
+.font-pixel {
+  font-family: var(--font-pixel);
+}
+
+.font-vt {
+  font-family: var(--font-vt);
+}
+
+.font-mono {
+  font-family: var(--font-mono);
+}
+
+.text-yellow { color: var(--yellow); }
+.text-cyan { color: var(--cyan); }
+.text-green { color: var(--green); }
+.text-pink { color: var(--pink); }
+.text-blue { color: var(--blue); }
+.text-gray { color: var(--gray); }
+.text-white { color: var(--white); }
+
+.bg-black { background-color: var(--black); }
+.bg-dark { background-color: var(--dark); }
+.bg-panel { background-color: var(--panel); }
+.bg-panel2 { background-color: var(--panel2); }
+
+.border-yellow { border-color: var(--yellow); }
+.border-cyan { border-color: var(--cyan); }
+.border-green { border-color: var(--green); }
+.border-pink { border-color: var(--pink); }
+.border-dim { border-color: var(--dim); }
+
+.glow-yellow { text-shadow: var(--glow-y); }
+.glow-cyan { text-shadow: var(--glow-c); }
+.glow-green { text-shadow: var(--glow-g); }
+.glow-pink { text-shadow: var(--glow-p); }
+
+.box-glow-yellow { box-shadow: var(--glow-y); }
+.box-glow-cyan { box-shadow: var(--glow-c); }
+.box-glow-green { box-shadow: var(--glow-g); }
+.box-glow-pink { box-shadow: var(--glow-p); }
+
+.animate-glitch {
+  animation: glitch 6s infinite;
+}
+
+.animate-blink-slow {
+  animation: blink-slow 3s infinite;
+}
+
+.animate-pulse {
+  animation: pulse 1.5s infinite;
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-rotate-slow {
+  animation: rotate-slow 20s linear infinite;
+}
+
+.animate-shimmer {
+  background: linear-gradient(90deg, transparent, rgba(245, 211, 0, 0.1), transparent);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+
+.animate-border-glow {
+  animation: border-glow 2s ease-in-out infinite;
+}
+
+/* Typewriter effect */
+.typewriter {
+  overflow: hidden;
+  white-space: nowrap;
+  border-right: 2px solid var(--yellow);
+  animation: 
+    typewriter 2s steps(40, end) forwards,
+    blink-cursor 0.75s step-end infinite;
+}
+
+/* Card hover effects */
+.card-hover {
+  transition: all 0.3s ease;
+}
+
+.card-hover:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 20px 40px rgba(245, 211, 0, 0.15);
+}
+
+/* 3D card tilt */
+.card-3d {
+  transform-style: preserve-3d;
+  transition: transform 0.3s ease;
+}
+
+.card-3d:hover {
+  transform: perspective(1000px) rotateX(5deg) rotateY(-5deg);
+}
+
+/* Magnetic button effect */
+.magnetic-btn {
+  transition: all 0.2s ease;
+}
+
+.magnetic-btn:hover {
+  transform: scale(1.05);
+}
+
+/* Section reveal */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.reveal.active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: all 0.6s ease;
+}
+
+/* Stagger children */
+.stagger-children > * {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.stagger-children.active > *:nth-child(1) { animation: fadeUp 0.5s ease 0.1s forwards; }
+.stagger-children.active > *:nth-child(2) { animation: fadeUp 0.5s ease 0.2s forwards; }
+.stagger-children.active > *:nth-child(3) { animation: fadeUp 0.5s ease 0.3s forwards; }
+.stagger-children.active > *:nth-child(4) { animation: fadeUp 0.5s ease 0.4s forwards; }
+.stagger-children.active > *:nth-child(5) { animation: fadeUp 0.5s ease 0.5s forwards; }
+.stagger-children.active > *:nth-child(6) { animation: fadeUp 0.5s ease 0.6s forwards; }
+
+/* Particle container */
+.particles-container {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: var(--yellow);
+  border-radius: 50%;
+  opacity: 0;
+}
+
+/* Grid lines animation */
+.grid-lines {
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(to right, rgba(245, 211, 0, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(245, 211, 0, 0.05) 1px, transparent 1px);
+  background-size: 50px 50px;
+  animation: grid-move 20s linear infinite;
+}
+
+@keyframes grid-move {
+  0% { transform: translate(0, 0); }
+  100% { transform: translate(50px, 50px); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .typewriter {
+    white-space: normal;
+    border-right: none;
+    animation: none;
+  }
+}
