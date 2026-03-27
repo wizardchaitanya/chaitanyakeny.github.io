@@ -5,6 +5,7 @@ import { MapPin, Code2, GraduationCap, Award, Cpu, Gamepad, Layers, Wrench } fro
 import XPBar from '../components/XPBar';
 import Card3D from '../components/Card3D';
 import useTextScramble from '../hooks/useTextScramble';
+import profileImage from './profile.jpg';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -179,14 +180,8 @@ const About = () => {
           {/* Photo Column */}
           <div className="about-photo-col flex flex-col items-center gap-3">
             <div className="about-photo-container relative group" style={{ perspective: '1000px' }}>
-              {/* 
-                TO ADD YOUR PROFILE PICTURE:
-                1. Place your image file (e.g., profile.jpg) in the /public folder
-                2. Change the src below from the placeholder to: /profile.jpg
-                3. Make sure your image is square (1:1 ratio) for best results
-              */}
               <img
-                src="profile.jpg"
+                src={profileImage}
                 alt="Chaitanya Keny"
                 className="w-[140px] h-[140px] object-cover object-center border-2 border-[#f5d300] transition-all duration-300 group-hover:shadow-[0_0_30px_rgba(245,211,0,0.3)]"
                 onError={(e) => {
@@ -201,7 +196,7 @@ const About = () => {
                       <div class="text-center">
                         <div class="text-4xl mb-2">🎮</div>
                         <div class="font-pixel text-[0.28rem] text-[#4a5568] text-center leading-[1.6] px-2">
-                          ADD PHOTO<br/>IN /public
+                          IMAGE LOAD<br/>FAILED
                         </div>
                       </div>
                     `;
