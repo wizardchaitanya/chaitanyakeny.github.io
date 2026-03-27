@@ -39,6 +39,11 @@ Every push to `main` triggers a deployment automatically.
 
 Whenever you want to publish new portfolio changes:
 
+
+### Deploy updates
+
+Whenever you want to publish new portfolio changes:
+
 ```bash
 git add .
 git commit -m "Update portfolio"
